@@ -43,11 +43,51 @@ try {
   check(!!byAuthor["Pat Photos"]?.cat, `image post labeled (${byAuthor["Pat Photos"]?.cat})`);
   await page.screenshot({ path: "feed.png" });
 
+  // --- Blur: LinkedIn's "Promoted" marker is certain, so that post is blurred until clicked ---
+  const acmeState = () => page.evaluate(() => {
+    const el = [...document.querySelectorAll("[data-je-id]")].find((x) => x.querySelector("[aria-label='View company: Acme AI']"));
+    return { mode: el.dataset.jeMode, revealed: !!el.dataset.jeRevealed, cover: getComputedStyle(el, "::before").content,
+      blur: getComputedStyle(el, "::before").backdropFilter, url: location.href };
+  });
+  let acme = await acmeState();
+  check(acme.mode === "blur" && acme.cover.includes("Promoted · click to show") && acme.blur.includes("blur"),
+    `promoted post is blurred behind a cover (${acme.mode}, ${acme.cover})`);
+  const box = await page.evaluate(() => {
+    const el = [...document.querySelectorAll("[data-je-id]")].find((x) => x.querySelector("[aria-label='View company: Acme AI']"));
+    el.scrollIntoView({ block: "center" });
+    const r = el.getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+  });
+  await page.mouse.click(box.x, box.y);
+  await sleep(300);
+  acme = await acmeState();
+  check(acme.revealed && acme.cover === "none" && acme.url === "https://www.linkedin.com/feed/", "one click reveals it and doesn't navigate away");
+  check(!(await page.evaluate(() => [...document.querySelectorAll("[data-je-mode='blur']")].some((el) => el.dataset.jePromoted !== "1" && el.dataset.jeCat !== "promotion"))),
+    "nothing else is blurred");
+
+  // Setting Promotion to Box doesn't unblur a post LinkedIn itself marked as Promoted...
+  await sw.evaluate(async () => {
+    const settings = await Jev.load();
+    settings.categories.find((c) => c.id === "promotion").mode = "box";
+    await Jev.save(settings);
+  });
+  await sleep(500);
+  check((await acmeState()).mode === "blur", "page-marked promoted posts stay blurred even when their category is set to Box");
+  // ...but turning the toggle off does.
+  await sw.evaluate(async () => {
+    const settings = await Jev.load();
+    settings.blurSponsored = false;
+    await Jev.save(settings);
+  });
+  await sleep(500);
+  check((await acmeState()).mode === "box", "turning off 'Blur promoted posts' shows them normally");
+
   // Hide engagement bait from the settings page and watch it disappear live.
   const opts = await browser.newPage();
   await opts.goto(`chrome-extension://${extId}/options.html`);
   await opts.waitForSelector(".cat");
   check((await opts.$$(".cat")).length === 9, "9 default categories on the settings page");
+  check((await opts.$$eval(".cat .modes", (m) => m[0].textContent)) === "BoxDimBlurHideOff", "settings offer a Blur mode");
   await opts.evaluate(() => {
     const li = [...document.querySelectorAll(".cat")].find((x) => x.querySelector(".name").value === "Engagement bait");
     [...li.querySelectorAll(".modes button")].find((b) => b.textContent === "Hide").click();

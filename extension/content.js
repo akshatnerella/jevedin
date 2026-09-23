@@ -20,11 +20,21 @@
 
   // ---------- painting ----------
 
+  // LinkedIn's own "Promoted" marker is certain, so those posts are blurred whatever their
+  // category says (unless the user hides that category outright).
+  function modeFor(cat, sponsored) {
+    if (!settings.enabled) return "off";
+    if (sponsored && settings.blurSponsored && cat.mode !== "hide") return "blur";
+    return cat.mode;
+  }
+
   function paint(el, r) {
     const cat = Jev.lookup(settings, r.category);
     el.dataset.jeState = "done";
     el.dataset.jeCat = r.category;
-    el.dataset.jeMode = settings.enabled ? cat.mode : "off";
+    const sponsored = el.dataset.jePromoted === "1";
+    el.dataset.jeMode = modeFor(cat, sponsored);
+    el.dataset.jeCover = sponsored ? "Promoted · click to show" : `${cat.label} · click to show`;
     el.dataset.jeLow = r.confidence < settings.lowConfidence ? "1" : "0";
     el.style.setProperty("--je-color", cat.color);
     const pct = settings.showConfidence ? ` ${Math.round(r.confidence * 100)}%` : "";
@@ -45,7 +55,8 @@
   }
 
   function clearEl(el) {
-    for (const k of ["jeState", "jeCat", "jeMode", "jeLow", "jeLabel", "jeTip", "jeId"]) delete el.dataset[k];
+    for (const k of ["jeState", "jeCat", "jeMode", "jeLow", "jeLabel", "jeTip", "jeId", "jeCover", "jeRevealed", "jePromoted"])
+      delete el.dataset[k];
     el.style.removeProperty("--je-color");
   }
 
@@ -76,6 +87,7 @@
 
       clearEl(el);
       el.dataset.jeId = post.id;
+      if (post.promoted) el.dataset.jePromoted = "1";
       const known = results.get(post.id);
       if (known) paint(el, known);
       else {
@@ -182,6 +194,15 @@
   });
 
   Jev.onChange((s) => alive() && applySettings(s));
+
+  // A click on a blurred post reveals it instead of following whatever is under the cursor.
+  addEventListener("click", (e) => {
+    const el = e.target.closest?.('[data-je-mode="blur"]:not([data-je-revealed])');
+    if (!el) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    el.dataset.jeRevealed = "1";
+  }, true);
 
   chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     if (msg.type === "pageStats") {

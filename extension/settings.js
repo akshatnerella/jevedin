@@ -4,7 +4,7 @@
   const MAX_CATEGORIES = 12; // user categories, not counting the fixed "other"
   const MAX_LABEL = 24;
   const MAX_DESCRIPTION = 240;
-  const MODES = ["box", "dim", "hide", "off"];
+  const MODES = ["box", "dim", "blur", "hide", "off"];
 
   // The description is exactly what Jev reads for that option, so it has to stand on its own.
   const DEFAULT_CATEGORIES = [
@@ -18,7 +18,7 @@
       description: "A story told one short line at a time with dramatic spacing, building to a fake-deep twist and a forced business lesson. Often starts with a shocking line like 'I fired my best employee today.'" },
     { id: "hiring", label: "Hiring", color: "#0891b2", mode: "box",
       description: "Job openings, 'we're hiring', recruiter outreach, referral requests, and candidates announcing they are open to work or looking for roles." },
-    { id: "promotion", label: "Promotion", color: "#0d9488", mode: "box",
+    { id: "promotion", label: "Promotion", color: "#0d9488", mode: "blur",
       description: "Promotes a product, service, course, newsletter, webinar, event or the poster's own business, including sponsored and promoted posts." },
     { id: "insight", label: "Real insight", color: "#16a34a", mode: "box",
       description: "Substantive professional content with specifics: real numbers, technical detail, how something actually worked or failed, analysis you could act on." },
@@ -56,6 +56,9 @@
     enabled: true,
     showConfidence: true,
     showBait: true,
+    // Blur content the page itself marks as paid (YouTube ad slots, LinkedIn "Promoted" posts)
+    // until the user clicks it, whatever category it lands in.
+    blurSponsored: true,
     lowConfidence: 0.55,
     categories: DEFAULT_CATEGORIES,
     otherMode: "off",
@@ -78,6 +81,7 @@
   function normalize(raw) {
     const s = { ...clone(DEFAULT_SETTINGS), ...(raw || {}) };
     if (!MODES.includes(s.otherMode)) s.otherMode = "off";
+    s.blurSponsored = s.blurSponsored !== false;
     s.lowConfidence = Math.min(0.95, Math.max(0, Number(s.lowConfidence) || 0));
     const taken = new Set(["other"]);
     const cats = Array.isArray(s.categories) ? s.categories : clone(DEFAULT_CATEGORIES);

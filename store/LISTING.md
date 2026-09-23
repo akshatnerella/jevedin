@@ -30,8 +30,11 @@ WHAT IT LABELS
 MAKE YOUR OWN CATEGORIES
 Want to spot recruiter spam, AI hype or event promos? Add up to 12 categories of your own, describe them in plain English, and JevedIn sorts your feed by them. Paste any post on the settings page to see how it would be labeled.
 
+LOCK IN
+Promoted posts are blurred behind a "click to show" cover, so they don't pull your attention. One click reveals one.
+
 YOU'RE IN CONTROL
-Set each category to box, dim, hide or off. Hide engagement bait entirely, dim humblebrags, keep real insight front and center. A dashed box means the model is unsure, and hovering any label shows the full breakdown. Toggle JevedIn anywhere with Alt+Shift+L.
+Set each category to box, dim, blur, hide or off. Hide engagement bait entirely, dim humblebrags, keep real insight front and center. A dashed box means the model is unsure, and hovering any label shows the full breakdown. Toggle JevedIn anywhere with Alt+Shift+L.
 
 PRIVATE BY DESIGN
 • No account or sign-in
