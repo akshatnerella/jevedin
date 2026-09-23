@@ -28,10 +28,10 @@ try {
   });
   const t0 = Date.now();
   await page.goto("https://www.linkedin.com/feed/", { waitUntil: "domcontentloaded" });
-  await page.waitForFunction(() => document.querySelectorAll("[data-lo-state=done]").length >= 5, { timeout: 30000, polling: 100 }).catch(() => {});
+  await page.waitForFunction(() => document.querySelectorAll("[data-je-state=done]").length >= 5, { timeout: 30000, polling: 100 }).catch(() => {});
   console.log(`  labels on screen ${Date.now() - t0}ms after navigation`);
-  const labels = await page.evaluate(() => [...document.querySelectorAll("[data-lo-id]")].map((el) => ({
-    state: el.dataset.loState, cat: el.dataset.loCat, label: el.dataset.loLabel,
+  const labels = await page.evaluate(() => [...document.querySelectorAll("[data-je-id]")].map((el) => ({
+    state: el.dataset.jeState, cat: el.dataset.jeCat, label: el.dataset.jeLabel,
     author: el.querySelector("[aria-label^='View ']")?.textContent })));
   labels.forEach((l) => console.log(`    ${(l.label || l.state).padEnd(26)} ${l.author}`));
   const byAuthor = Object.fromEntries(labels.map((l) => [l.author, l]));
@@ -53,7 +53,7 @@ try {
     [...li.querySelectorAll(".modes button")].find((b) => b.textContent === "Hide").click();
   });
   await sleep(700);
-  const hidden = await page.evaluate(() => [...document.querySelectorAll("[data-lo-cat='engagement_bait']")].every((el) => getComputedStyle(el).display === "none"));
+  const hidden = await page.evaluate(() => [...document.querySelectorAll("[data-je-cat='engagement_bait']")].every((el) => getComputedStyle(el).display === "none"));
   check(hidden, "setting a category to Hide hides it on the open feed");
 
   // Test-a-post on the settings page.
@@ -69,7 +69,7 @@ try {
   await popup.goto(`chrome-extension://${extId}/popup.html`);
   await sleep(600);
   const names = await popup.$$eval(".name", (els) => els.map((e) => e.textContent));
-  check(names[0] === "Engagement bait" && names.at(-1) === "Other", "popup lists LinkedOut's categories");
+  check(names[0] === "Engagement bait" && names.at(-1) === "Other", "popup lists JevedIn's categories");
   await popup.screenshot({ path: "popup.png" });
 } finally {
   await browser.close();

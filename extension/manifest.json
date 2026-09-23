@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "LinkedOut: Cut the Slop from LinkedIn",
-  "short_name": "LinkedOut",
-  "version": "1.0.0",
+  "name": "JevedIn: Cut the Slop from LinkedIn",
+  "short_name": "JevedIn",
+  "version": "1.1.0",
   "description": "Color-codes every LinkedIn post as engagement bait, humblebrag, AI slop or your own categories, so you can skip the noise.",
   "icons": {
     "16": "icons/icon16.png",
@@ -37,7 +37,7 @@
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "LinkedOut",
+    "default_title": "JevedIn",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png"
@@ -48,11 +48,11 @@
     "open_in_tab": true
   },
   "commands": {
-    "toggle-linkedout": {
+    "toggle-jevedin": {
       "suggested_key": {
         "default": "Alt+Shift+L"
       },
-      "description": "Turn LinkedOut on or off"
+      "description": "Turn JevedIn on or off"
     }
   },
   "homepage_url": "https://github.com/akshatnerella/jevedin"

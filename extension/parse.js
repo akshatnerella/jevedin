@@ -116,5 +116,5 @@
     return `p${n.toString(36)}`;
   }
 
-  self.LinkedOutParse = { FEED, TEXT_BOX, findPosts, isPost, parsePost, paintTarget, postId };
+  self.JevedinParse = { FEED, TEXT_BOX, findPosts, isPost, parsePost, paintTarget, postId };
 })();

@@ -1,32 +1,32 @@
-[data-lo-id] {
+[data-je-id] {
   position: relative;
 }
 
 /* box */
-[data-lo-state="done"][data-lo-mode="box"],
-[data-lo-state="done"][data-lo-mode="dim"] {
-  outline: 3px solid var(--lo-color) !important;
+[data-je-state="done"][data-je-mode="box"],
+[data-je-state="done"][data-je-mode="dim"] {
+  outline: 3px solid var(--je-color) !important;
   outline-offset: 2px;
   border-radius: 12px;
 }
-[data-lo-state="done"][data-lo-low="1"]:not([data-lo-mode="off"]) {
+[data-je-state="done"][data-je-low="1"]:not([data-je-mode="off"]) {
   outline-style: dashed !important;
 }
-[data-lo-state="pending"]:not([data-lo-mode="off"]) {
+[data-je-state="pending"]:not([data-je-mode="off"]) {
   outline: 2px dashed rgba(128, 128, 128, 0.6) !important;
   outline-offset: 2px;
   border-radius: 12px;
 }
 
 /* label */
-[data-lo-state="done"]:is([data-lo-mode="box"], [data-lo-mode="dim"])::after {
-  content: attr(data-lo-label);
+[data-je-state="done"]:is([data-je-mode="box"], [data-je-mode="dim"])::after {
+  content: attr(data-je-label);
   position: absolute;
   top: 6px;
   left: 6px;
   z-index: 50;
   max-width: calc(100% - 12px);
-  background: var(--lo-color);
+  background: var(--je-color);
   color: #fff;
   font: 600 11px/18px -apple-system, system-ui, "Segoe UI", sans-serif;
   letter-spacing: 0.02em;
@@ -38,19 +38,19 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-[data-lo-state="done"][data-lo-tip]:is([data-lo-mode="box"], [data-lo-mode="dim"]):hover::after {
-  content: attr(data-lo-tip);
+[data-je-state="done"][data-je-tip]:is([data-je-mode="box"], [data-je-mode="dim"]):hover::after {
+  content: attr(data-je-tip);
   white-space: normal;
 }
 
 /* dim / hide */
-[data-lo-state="done"][data-lo-mode="dim"] {
+[data-je-state="done"][data-je-mode="dim"] {
   opacity: 0.25;
   transition: opacity 0.15s;
 }
-[data-lo-state="done"][data-lo-mode="dim"]:hover {
+[data-je-state="done"][data-je-mode="dim"]:hover {
   opacity: 1;
 }
-[data-lo-state="done"][data-lo-mode="hide"] {
+[data-je-state="done"][data-je-mode="hide"] {
   display: none !important;
 }

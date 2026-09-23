@@ -11,7 +11,7 @@ const browser = await puppeteer.launch({ headless: true });
 const page = await browser.newPage();
 await page.setContent(fixture);
 await page.addScriptTag({ content: parser });
-const posts = await page.evaluate(() => LinkedOutParse.findPosts().map(LinkedOutParse.parsePost));
+const posts = await page.evaluate(() => JevedinParse.findPosts().map(JevedinParse.parsePost));
 
 check(posts.length === 5, `finds the 5 posts and skips the composer and sort control (${posts.length})`);
 const [gina, sam, acme, dana, pat] = posts;
@@ -26,7 +26,7 @@ check(pat.media.includes("image"), "image post has image media");
 check(new Set(posts.map((p) => p.id)).size === 5, "every post gets a distinct id");
 
 // Same author + text -> same id, on any page, for any user: that's what makes the shared cache work.
-const again = await page.evaluate((p) => LinkedOutParse.postId(p), { author: dana.author, text: dana.text });
+const again = await page.evaluate((p) => JevedinParse.postId(p), { author: dana.author, text: dana.text });
 check(again === dana.id && /^p[0-9a-z]+$/.test(dana.id), `ids are content fingerprints (${dana.id})`);
 
 await browser.close();

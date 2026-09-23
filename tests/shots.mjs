@@ -13,7 +13,7 @@ await feed.bringToFront();
 await feed.setRequestInterception(true);
 feed.on("request", (r) => r.url().startsWith("https://www.linkedin.com/") ? r.respond({ status: 200, contentType: "text/html", body: fixture }) : r.url().includes("licdn") ? r.respond({ status: 200, body: "" }) : r.continue());
 await feed.goto("https://www.linkedin.com/feed/", { waitUntil: "domcontentloaded" });
-await feed.waitForFunction(() => document.querySelectorAll("[data-lo-state=done]").length >= 5, { timeout: 30000, polling: 100 });
+await feed.waitForFunction(() => document.querySelectorAll("[data-je-state=done]").length >= 5, { timeout: 30000, polling: 100 });
 await feed.evaluate(() => window.scrollTo(0, 100));
 await feed.screenshot({ path: out("screenshot-1-feed.png") });
 const opts = await browser.newPage();

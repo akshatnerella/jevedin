@@ -5,7 +5,7 @@
   const MAX_IN_FLIGHT = 3;
   const NEAR_VIEWPORT_PX = 1500;
 
-  let settings = Sloppy.normalize(null);
+  let settings = Jev.normalize(null);
   let results = new Map(); // postId -> result, for the current category set
   const queue = new Map(); // postId -> post payload
   let generation = 0; // bumped when categories change; stale responses are dropped
@@ -21,39 +21,39 @@
   // ---------- painting ----------
 
   function paint(el, r) {
-    const cat = Sloppy.lookup(settings, r.category);
-    el.dataset.loState = "done";
-    el.dataset.loCat = r.category;
-    el.dataset.loMode = settings.enabled ? cat.mode : "off";
-    el.dataset.loLow = r.confidence < settings.lowConfidence ? "1" : "0";
-    el.style.setProperty("--lo-color", cat.color);
+    const cat = Jev.lookup(settings, r.category);
+    el.dataset.jeState = "done";
+    el.dataset.jeCat = r.category;
+    el.dataset.jeMode = settings.enabled ? cat.mode : "off";
+    el.dataset.jeLow = r.confidence < settings.lowConfidence ? "1" : "0";
+    el.style.setProperty("--je-color", cat.color);
     const pct = settings.showConfidence ? ` ${Math.round(r.confidence * 100)}%` : "";
     const bait = settings.showBait && r.category !== "engagement_bait" && r.bait >= 0.75 ? " ⚡bait" : "";
-    el.dataset.loLabel = `${cat.label}${pct}${bait}`;
+    el.dataset.jeLabel = `${cat.label}${pct}${bait}`;
     if (r.probabilities) {
-      el.dataset.loTip = Object.entries(r.probabilities)
+      el.dataset.jeTip = Object.entries(r.probabilities)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 3)
-        .map(([k, p]) => `${Sloppy.lookup(settings, k).label} ${Math.round(p * 100)}%`)
+        .map(([k, p]) => `${Jev.lookup(settings, k).label} ${Math.round(p * 100)}%`)
         .join(" · ") + (r.bait != null ? ` · bait ${Math.round(r.bait * 100)}%` : "");
     }
   }
 
   function markPending(el) {
-    el.dataset.loState = "pending";
-    el.dataset.loMode = settings.enabled ? "box" : "off";
+    el.dataset.jeState = "pending";
+    el.dataset.jeMode = settings.enabled ? "box" : "off";
   }
 
   function clearEl(el) {
-    for (const k of ["loState", "loCat", "loMode", "loLow", "loLabel", "loTip", "loId"]) delete el.dataset[k];
-    el.style.removeProperty("--lo-color");
+    for (const k of ["jeState", "jeCat", "jeMode", "jeLow", "jeLabel", "jeTip", "jeId"]) delete el.dataset[k];
+    el.style.removeProperty("--je-color");
   }
 
   function repaintAll() {
-    document.querySelectorAll("[data-lo-id]").forEach((el) => {
-      const r = results.get(el.dataset.loId);
+    document.querySelectorAll("[data-je-id]").forEach((el) => {
+      const r = results.get(el.dataset.jeId);
       if (r) paint(el, r);
-      else if (el.dataset.loState !== "waiting") markPending(el);
+      else if (el.dataset.jeState !== "waiting") markPending(el);
     });
   }
 
@@ -66,16 +66,16 @@
 
   function scan() {
     if (!alive()) return shutdown();
-    for (const container of LinkedOutParse.findPosts()) {
-      const el = LinkedOutParse.paintTarget(container);
+    for (const container of JevedinParse.findPosts()) {
+      const el = JevedinParse.paintTarget(container);
       if (!el || !nearViewport(el)) continue;
 
-      const post = LinkedOutParse.parsePost(container);
+      const post = JevedinParse.parsePost(container);
       if (!post) continue;
-      if (el.dataset.loId === post.id) continue; // already handled
+      if (el.dataset.jeId === post.id) continue; // already handled
 
       clearEl(el);
-      el.dataset.loId = post.id;
+      el.dataset.jeId = post.id;
       const known = results.get(post.id);
       if (known) paint(el, known);
       else {
@@ -105,14 +105,14 @@
           lastError = resp?.error || null;
           for (const [id, r] of Object.entries(resp?.results || {})) {
             results.set(id, r);
-            document.querySelectorAll(`[data-lo-id="${id}"]`).forEach((el) => paint(el, r));
+            document.querySelectorAll(`[data-je-id="${id}"]`).forEach((el) => paint(el, r));
           }
           const failed = batch.filter((p) => !results.has(p.id));
           if (failed.length) {
             // Keep the page looking normal while we retry in the background.
             failed.forEach((p) => {
               queue.set(p.id, p);
-              document.querySelectorAll(`[data-lo-id="${p.id}"]`).forEach((el) => (el.dataset.loState = "waiting"));
+              document.querySelectorAll(`[data-je-id="${p.id}"]`).forEach((el) => (el.dataset.jeState = "waiting"));
             });
             backoff();
           } else {
@@ -123,7 +123,7 @@
           if (!alive()) return shutdown();
           lastError = String(e?.message || e);
           if (gen === generation) batch.forEach((p) => queue.set(p.id, p));
-          document.querySelectorAll("[data-lo-state='pending']").forEach((el) => (el.dataset.loState = "waiting"));
+          document.querySelectorAll("[data-je-state='pending']").forEach((el) => (el.dataset.jeState = "waiting"));
           backoff();
         })
         .finally(() => {
@@ -154,25 +154,25 @@
     observer?.disconnect();
     clearInterval(interval);
     removeEventListener("scroll", onScroll);
-    document.querySelectorAll("[data-lo-id]").forEach(clearEl);
+    document.querySelectorAll("[data-je-id]").forEach(clearEl);
   }
 
   function applySettings(next) {
-    const categoriesChanged = Sloppy.categorySetKey(next) !== Sloppy.categorySetKey(settings);
+    const categoriesChanged = Jev.categorySetKey(next) !== Jev.categorySetKey(settings);
     settings = next;
     if (categoriesChanged) {
       generation++;
       results = new Map();
       queue.clear();
       retryAt = 0;
-      document.querySelectorAll("[data-lo-id]").forEach(clearEl);
+      document.querySelectorAll("[data-je-id]").forEach(clearEl);
       scheduleScan(0);
     }
     repaintAll();
     if (settings.enabled) pump();
   }
 
-  Sloppy.load().then((s) => {
+  Jev.load().then((s) => {
     settings = s;
     observer = new MutationObserver(() => scheduleScan());
     observer.observe(document.documentElement, { childList: true, subtree: true });
@@ -181,17 +181,17 @@
     scan();
   });
 
-  Sloppy.onChange((s) => alive() && applySettings(s));
+  Jev.onChange((s) => alive() && applySettings(s));
 
   chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     if (msg.type === "pageStats") {
       const counts = {};
-      document.querySelectorAll("[data-lo-state='done']").forEach((el) => {
-        counts[el.dataset.loCat] = (counts[el.dataset.loCat] || 0) + 1;
+      document.querySelectorAll("[data-je-state='done']").forEach((el) => {
+        counts[el.dataset.jeCat] = (counts[el.dataset.jeCat] || 0) + 1;
       });
       sendResponse({
         counts,
-        pending: document.querySelectorAll("[data-lo-state='pending']").length,
+        pending: document.querySelectorAll("[data-je-state='pending']").length,
         error: lastError,
       });
     }

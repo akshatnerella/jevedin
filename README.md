@@ -1,8 +1,8 @@
-# LinkedOut
+# JevedIn
 
 A Chrome/Brave extension that draws a colored box around every post in your LinkedIn feed and labels it as **Engagement bait, Humblebrag, AI slop, Broetry, Hiring, Promotion, Real insight, News, Personal**, or any categories you define. Labels come from [Jev](https://docs.typesafe.ai).
 
-This repo is the **client only**. Classification runs on the shared [jev-backend](https://github.com/akshatnerella/jev-backend) at `POST https://jev-backend.vercel.app/api/linkedout/classify`, which also serves [SloppyYT](https://github.com/akshatnerella/jevtube).
+This repo is the **client only**. Classification runs on the shared [jev-backend](https://github.com/akshatnerella/jev-backend) at `POST https://jev-backend.vercel.app/api/jevedin/classify`, which also serves [JevTube](https://github.com/akshatnerella/jevtube).
 
 ## Layout
 
@@ -11,12 +11,12 @@ extension/   MV3 extension (what ships to the Chrome Web Store). No secrets in h
   parse.js   Reading LinkedIn's feed DOM, kept separate so it can be tested on a fixture.
 store/       Store listing text, screenshots, promo tile.
 tests/       Parser tests and an end-to-end run of the real extension on a feed fixture.
-scripts/     package.sh builds dist/linkedout-<version>.zip for upload.
+scripts/     package.sh builds dist/jevedin-<version>.zip for upload.
 ```
 
 ```
 content.js (LinkedIn tab)              background.js              jev-backend
-  finds posts near the viewport,  ──▶   local cache,       ──▶   /api/linkedout/classify
+  finds posts near the viewport,  ──▶   local cache,       ──▶   /api/jevedin/classify
   parses them (parse.js),               install ID               (validation, shared cache,
   paints boxes + labels                                           limits, Jev)
 ```
@@ -30,7 +30,7 @@ content.js (LinkedIn tab)              background.js              jev-backend
 ## Develop
 
 ```sh
-./scripts/package.sh                         # -> dist/linkedout-<version>.zip
+./scripts/package.sh                         # -> dist/jevedin-<version>.zip
 cd tests && npm install && npm test          # parser checks + the real extension on the fixture, against production
 ```
 

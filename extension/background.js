@@ -39,8 +39,8 @@ function saveCacheSoon() {
 
 async function classify(posts) {
   await loadCache();
-  const settings = await Sloppy.load();
-  const setKey = Sloppy.categorySetKey(settings);
+  const settings = await Jev.load();
+  const setKey = Jev.categorySetKey(settings);
   const results = {};
   const todo = [];
   for (const p of posts) {
@@ -58,7 +58,7 @@ async function classify(posts) {
       body: JSON.stringify({
         installId: await getInstallId(),
         posts: todo,
-        categories: Sloppy.classifierCategories(settings),
+        categories: Jev.classifierCategories(settings),
       }),
     });
     const data = await res.json().catch(() => ({}));
@@ -81,21 +81,21 @@ async function classify(posts) {
     }
     return { results, error: lastError };
   } catch (e) {
-    lastError = "Can't reach the LinkedOut server. Retrying shortly.";
+    lastError = "Can't reach the JevedIn server. Retrying shortly.";
     return { results, error: lastError };
   }
 }
 
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
-  await Sloppy.load(); // migrates v1 settings on update
+  await Jev.load(); // migrates v1 settings on update
   if (reason === "install") chrome.tabs.create({ url: chrome.runtime.getURL("welcome.html") });
 });
 
 chrome.commands.onCommand.addListener(async (command) => {
-  if (command !== "toggle-linkedout") return;
-  const settings = await Sloppy.load();
+  if (command !== "toggle-jevedin") return;
+  const settings = await Jev.load();
   settings.enabled = !settings.enabled;
-  await Sloppy.save(settings);
+  await Jev.save(settings);
 });
 
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {

@@ -1,9 +1,9 @@
 #!/bin/sh
-# Builds the Chrome Web Store upload: dist/linkedout-<version>.zip
+# Builds the Chrome Web Store upload: dist/jevedin-<version>.zip
 set -e
 cd "$(dirname "$0")/.."
 VERSION=$(python3 -c "import json;print(json.load(open('extension/manifest.json'))['version'])")
-OUT="dist/linkedout-$VERSION.zip"
+OUT="dist/jevedin-$VERSION.zip"
 mkdir -p dist && rm -f "$OUT"
 (cd extension && zip -qr "../$OUT" . -x '.*' -x '*/.*' -x 'config.local.js')
 echo "$OUT"
