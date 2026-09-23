@@ -2,7 +2,7 @@
 
 A Chrome/Brave extension that draws a colored box around every post in your LinkedIn feed and labels it as **Engagement bait, Humblebrag, AI slop, Broetry, Hiring, Promotion, Real insight, News, Personal**, or any categories you define. Labels come from [Jev](https://docs.typesafe.ai).
 
-This repo is the **client only**. Classification runs on the shared [jev-backend](https://github.com/akshatnerella/jev-backend) at `POST https://jev-backend.vercel.app/api/linkedout/classify`, which also serves [SloppyYT](https://github.com/akshatnerella/sloppyyt).
+This repo is the **client only**. Classification runs on the shared [jev-backend](https://github.com/akshatnerella/jev-backend) at `POST https://jev-backend.vercel.app/api/linkedout/classify`, which also serves [SloppyYT](https://github.com/akshatnerella/jevtube).
 
 ## Layout
 
