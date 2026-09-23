@@ -1,0 +1,56 @@
+[data-lo-id] {
+  position: relative;
+}
+
+/* box */
+[data-lo-state="done"][data-lo-mode="box"],
+[data-lo-state="done"][data-lo-mode="dim"] {
+  outline: 3px solid var(--lo-color) !important;
+  outline-offset: 2px;
+  border-radius: 12px;
+}
+[data-lo-state="done"][data-lo-low="1"]:not([data-lo-mode="off"]) {
+  outline-style: dashed !important;
+}
+[data-lo-state="pending"]:not([data-lo-mode="off"]) {
+  outline: 2px dashed rgba(128, 128, 128, 0.6) !important;
+  outline-offset: 2px;
+  border-radius: 12px;
+}
+
+/* label */
+[data-lo-state="done"]:is([data-lo-mode="box"], [data-lo-mode="dim"])::after {
+  content: attr(data-lo-label);
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 50;
+  max-width: calc(100% - 12px);
+  background: var(--lo-color);
+  color: #fff;
+  font: 600 11px/18px -apple-system, system-ui, "Segoe UI", sans-serif;
+  letter-spacing: 0.02em;
+  padding: 0 7px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+[data-lo-state="done"][data-lo-tip]:is([data-lo-mode="box"], [data-lo-mode="dim"]):hover::after {
+  content: attr(data-lo-tip);
+  white-space: normal;
+}
+
+/* dim / hide */
+[data-lo-state="done"][data-lo-mode="dim"] {
+  opacity: 0.25;
+  transition: opacity 0.15s;
+}
+[data-lo-state="done"][data-lo-mode="dim"]:hover {
+  opacity: 1;
+}
+[data-lo-state="done"][data-lo-mode="hide"] {
+  display: none !important;
+}

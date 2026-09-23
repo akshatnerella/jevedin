@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LinkedOut — Privacy Policy</title>
+<style>
+  body { max-width: 680px; margin: 0 auto; padding: 32px 20px 64px; font: 16px/1.6 system-ui, sans-serif; color: #1a1a1a; background: #fff; }
+  @media (prefers-color-scheme: dark) { body { color: #e8e8e8; background: #121212; } a { color: #8ab4f8; } }
+  h1 { font-size: 28px; margin-bottom: 4px; } h2 { font-size: 18px; margin-top: 28px; }
+  .muted { color: #777; font-size: 14px; }
+</style>
+</head>
+<body>
+<h1>LinkedOut Privacy Policy</h1>
+<p class="muted">Last updated: September 22, 2026</p>
+
+<p>LinkedOut is a browser extension that labels posts in your LinkedIn feed (for example "Engagement bait", "Humblebrag", "AI slop") so you can decide what is worth reading. This policy explains exactly what data it handles.</p>
+
+<h2>What the extension sends</h2>
+<p>When you view your LinkedIn feed, the extension reads the <strong>text of the posts shown on that page</strong>: the post text, the author's name and headline, whether the post is sponsored or a repost, what media it has, and the visible reaction and comment counts. It sends that text, plus a <strong>random install identifier</strong> generated when you install the extension, to the LinkedOut server to get a label for each post. It also sends the <strong>category names and descriptions</strong> you have set up (for example "Recruiter spam: mass outreach with no role detail"), so posts can be sorted into your categories.</p>
+
+<h2>What it does not collect</h2>
+<ul>
+  <li>No account, name, email, or LinkedIn login information.</li>
+  <li>No private messages, connections, notifications or profile data.</li>
+  <li>No browsing history outside the posts shown in your LinkedIn feed.</li>
+  <li>No cookies or form data, and nothing you type into LinkedIn.</li>
+  <li>The extension does not run on any site other than linkedin.com.</li>
+</ul>
+
+<h2>How data is used</h2>
+<p>Post text and your category descriptions are used only to produce the labels. Labels are cached for up to 14 days under a fingerprint of the post's author and text (not by user, and the fingerprint cannot be turned back into the post) so the same post is not classified twice. The install identifier and your IP address are used only to enforce a daily usage limit and are kept in daily counters that expire within about 25 hours.</p>
+
+<h2>Service providers</h2>
+<p>Classification runs on Vercel (hosting and AI Gateway) and the Jev model by TypeSafe AI. These providers process the post text only to return labels; per their published terms, the model is not trained on requests.</p>
+
+<h2>Sharing and sale</h2>
+<p>We do not sell or share data with anyone for advertising or any other purpose, and we do not use it to determine creditworthiness or for lending.</p>
+
+<h2>Local storage</h2>
+<p>Your settings (including your categories) are stored in your browser's extension sync storage, so they follow you to other browsers where you're signed in. A cache of labels is kept locally. Uninstalling the extension deletes them.</p>
+
+<h2>Contact</h2>
+<p>Questions or deletion requests: use the Support tab on the LinkedOut Chrome Web Store listing.</p>
+</body>
+</html>
