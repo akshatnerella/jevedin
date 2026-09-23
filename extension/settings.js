@@ -19,11 +19,11 @@
     { id: "hiring", label: "Hiring", color: "#0891b2", mode: "box",
       description: "Job openings, 'we're hiring', recruiter outreach, referral requests, and candidates announcing they are open to work or looking for roles." },
     { id: "promotion", label: "Promotion", color: "#0d9488", mode: "blur",
-      description: "Promotes a product, service, course, newsletter, webinar, event or the poster's own business, including sponsored and promoted posts." },
+      description: "A sales pitch or ad: the post mainly wants you to buy, sign up, download, register or DM for something (sponsored posts, lead magnets, discount codes, webinar sign-ups). Not founders sharing a launch or milestone, or free learning content." },
     { id: "insight", label: "Real insight", color: "#16a34a", mode: "box",
-      description: "Substantive professional content with specifics: real numbers, technical detail, how something actually worked or failed, analysis you could act on." },
+      description: "Substantive professional content with specifics: real numbers, technical detail, how something actually worked or failed, explainers and learning series." },
     { id: "news", label: "News", color: "#2563eb", mode: "box",
-      description: "Factual industry or world news: funding rounds, layoffs, acquisitions, product launches, regulation, research results." },
+      description: "Factual industry or world news, including companies and startups announcing launches, funding, results or acquisitions; layoffs, regulation, research." },
     { id: "personal", label: "Personal", color: "#8b5cf6", mode: "box",
       description: "A genuine personal update or milestone: a new job, graduation, birth, loss, anniversary, or a real life event shared plainly." },
   ];
@@ -66,6 +66,14 @@
 
   const clone = (x) => JSON.parse(JSON.stringify(x));
 
+  // Earlier default descriptions, mapped to their improved wording. A category the user never edited
+  // still carries the old text, so it gets upgraded; anything the user wrote is left alone.
+  const UPGRADED_DESCRIPTIONS = {
+    "Promotes a product, service, course, newsletter, webinar, event or the poster's own business, including sponsored and promoted posts.": "A sales pitch or ad: the post mainly wants you to buy, sign up, download, register or DM for something (sponsored posts, lead magnets, discount codes, webinar sign-ups). Not founders sharing a launch or milestone, or free learning content.",
+    "Factual industry or world news: funding rounds, layoffs, acquisitions, product launches, regulation, research results.": "Factual industry or world news, including companies and startups announcing launches, funding, results or acquisitions; layoffs, regulation, research.",
+    "Substantive professional content with specifics: real numbers, technical detail, how something actually worked or failed, analysis you could act on.": "Substantive professional content with specifics: real numbers, technical detail, how something actually worked or failed, explainers and learning series.",
+  };
+
   function slug(label) {
     return (label || "").toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "").slice(0, 24) || "category";
   }
@@ -94,7 +102,7 @@
         return {
           id,
           label: c.label.trim().slice(0, MAX_LABEL),
-          description: String(c.description || c.label).trim().slice(0, MAX_DESCRIPTION),
+          description: (UPGRADED_DESCRIPTIONS[String(c.description).trim()] || String(c.description || c.label).trim()).slice(0, MAX_DESCRIPTION),
           color: /^#[0-9a-f]{6}$/i.test(c.color) ? c.color : PALETTE[i % PALETTE.length],
           mode: MODES.includes(c.mode) ? c.mode : "box",
         };
