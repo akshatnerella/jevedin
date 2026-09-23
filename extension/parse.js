@@ -49,6 +49,8 @@
   const SOCIAL = /^[\d,.]+[KM]?\s*(reactions?|comments?|reposts?|impressions?|likes?)\b/i;
   const FOLLOWERS = /^[\d,.]+[KM]?\s*followers?$/i;
   const TIME_AGO = /^\d+\s*(s|m|h|d|w|mo|y|second|minute|hour|day|week|month|year)s?\b.*$/i;
+  // Connection degree, on its own line ("• 1st") or after the name ("Jane Doe • 2nd").
+  const DEGREE = /(^|\s)•\s*(1st|2nd|3rd\+?|Following|Author)\s*$/i;
 
   function parsePost(el) {
     const rawLines = (el.innerText || "").split("\n").map(oneLine).filter(Boolean);
@@ -58,20 +60,22 @@
       !!el.querySelector('[aria-label*="Sponsored" i]');
     const repost = /\breposted this\b/i.test(rawLines.slice(0, 4).join(" "));
 
+    // The author's headline is the first real line after their name.
+    const isChrome = (l) =>
+      l === author || DEGREE.test(l) || NOISE.test(l) || SOCIAL.test(l) || FOLLOWERS.test(l) || TIME_AGO.test(l);
+    const at = rawLines.findIndex((l) => l === author || l.startsWith(`${author} •`));
+    const headline = at >= 0 ? rawLines.slice(at + 1, at + 4).find((l) => !isChrome(l)) || "" : "";
+
     let text = clean(el.querySelector(TEXT_BOX)?.innerText || "");
     if (!text) {
-      // Image-only posts, some reposts, and layout variants: rebuild from the visible lines.
+      // Image-only posts, some reposts, and layout variants: rebuild from the visible lines,
+      // skipping the author block and LinkedIn's own chrome.
       text = rawLines
-        .filter((l) => l !== author && !NOISE.test(l) && !SOCIAL.test(l) && !FOLLOWERS.test(l) && !TIME_AGO.test(l))
+        .filter((l) => !isChrome(l) && l !== headline && !l.startsWith(`${author} •`))
         .slice(0, 12)
         .join(" ")
         .trim();
     }
-
-    // The author's headline is the line just after their name, if it isn't chrome.
-    const at = rawLines.indexOf(author);
-    const after = at >= 0 ? rawLines.slice(at + 1, at + 4) : [];
-    const headline = after.find((l) => !NOISE.test(l) && !TIME_AGO.test(l) && !FOLLOWERS.test(l) && !l.startsWith("•")) || "";
 
     const social = rawLines.filter((l) => SOCIAL.test(l)).slice(0, 2).join(", ");
     const media = [

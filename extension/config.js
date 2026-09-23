@@ -1,1 +1,3 @@
-self.LINKEDOUT_BACKEND = "https://linkedout.vercel.app";
+// The shared Jev backend (github.com/akshatnerella/jev-backend) serves every app; this is LinkedOut's endpoint.
+self.JEV_ENDPOINT = "https://jev-backend.vercel.app/api/linkedout/classify";
+self.PRIVACY_URL = "https://jev-backend.vercel.app/linkedout/privacy.html";

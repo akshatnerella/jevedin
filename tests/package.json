@@ -1,0 +1,7 @@
+{
+  "name": "linkedout-tests",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node parse.test.mjs && node e2e.mjs" },
+  "devDependencies": { "puppeteer": "^24.0.0" }
+}

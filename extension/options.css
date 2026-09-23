@@ -33,7 +33,7 @@ a { color: inherit; }
 .name { flex: 1 1 160px; min-width: 0; font: 600 15px/1.3 var(--font); padding: 7px 9px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: inherit; }
 .name:hover, .name:focus { border-color: var(--line); background: var(--field); outline: none; }
 .desc { width: 100%; margin-top: 6px; resize: none; overflow: hidden; min-height: 44px; font: 14px/1.45 var(--font); color: inherit; background: var(--field); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
-.desc:focus, .name:focus, .test input:focus { outline: 2px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: 0; }
+.desc:focus, .name:focus, .test input:focus, .test textarea:focus { outline: 2px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: 0; }
 .err { color: var(--err); font-size: 13px; margin-top: 4px; }
 
 .swatch { display: inline-block; width: 22px; height: 22px; border-radius: 6px; background: var(--c, #999); flex: none; }
@@ -62,7 +62,8 @@ a { color: inherit; }
 .chip:hover { border-style: solid; background: var(--chip); }
 
 .test { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-.test input { flex: 2 1 240px; min-width: 0; font: 14px var(--font); padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--field); color: inherit; }
+.test input, .test textarea { flex: 2 1 240px; min-width: 0; font: 14px var(--font); padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--field); color: inherit; }
+.test textarea { flex-basis: 100%; resize: vertical; line-height: 1.45; }
 .test input#testChannel { flex: 1 1 140px; }
 .test-result { margin-top: 14px; display: grid; gap: 6px; }
 .bar { display: grid; grid-template-columns: 120px 1fr 44px; align-items: center; gap: 10px; font-size: 13px; }
